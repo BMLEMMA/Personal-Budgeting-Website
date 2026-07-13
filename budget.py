@@ -6,29 +6,57 @@ import numpy as np
 st.set_page_config(page_title="Personal Budget Visualizer", layout="wide")
 st.title("Personal Budget Visualizer")
 
+pink_colors = ['#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB']
+
+#___________________Year & month selection_______________________________
+st.header("Year and Month Selection")
+years=[2026, 2027, 2028]
+months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", 
+        "Oct", "Nov", "Dec"]
+col1, col2= st.columns(2)
+with col1:
+    year_option= st.selectbox(
+        "Pick a year",
+        years
+    )
+
+with col2:
+    month_option= st.selectbox(
+        "Pick a month",
+        months
+    )
+
+st.write(f"You selected: {month_option} {year_option}")
+
 #___________________INCOME STREAMS__________________________________
 #asking for the number of income streams:
-st.header("Income Streams")
-no_inc_streams=int(st.number_input("Enter your number of income streams:"))
+st.header(f"Income Streams for the year of {year_option} and month of {month_option}")
+no_inc_streams=int(st.number_input("Enter your number of income streams:", step=1))
 
 inc_stream_lst=[]
 for i in range (no_inc_streams):
     inc_stream=st.text_input(f"insert income stream #{i}", key=f"inc_name_{i}")
     inc_stream_lst.append (inc_stream)
-    print(f"total income streams: {inc_stream_lst}")
+    st.write(f"total income streams: {inc_stream_lst}")
 
+inc_stream_hrly_lst=[]
+for i in range (no_inc_streams):
+    inc_stream_inc=st.number_input(f"insert hourly income per stream #{i}", min_value=0, key=f"inc_hrly_{i}")
+    inc_stream_hrly_lst.append (inc_stream_inc)
+    st.write(f"total income streams: {inc_stream_hrly_lst}")
+
+inc_stream_hrs_lst=[]
+for i in range (no_inc_streams):
+    inc_stream_inc=st.number_input(f"insert number of hours worked per stream #{i}", min_value=0, key=f"inc_hrs_{i}")
+    inc_stream_hrs_lst.append (inc_stream_inc)
+    st.write(f"total income streams: {inc_stream_hrs_lst}")
 
 inc_stream_inc_lst=[]
 for i in range (no_inc_streams):
-    inc_stream_inc=st.number_input(f"insert income amounts per stream #{i}", min_value=0, key=f"inc_amt_{i}")
+    inc_stream_inc = inc_stream_hrly_lst[i] * inc_stream_hrs_lst[i]
+    st.write(i, inc_stream_hrly_lst[i], inc_stream_hrs_lst[i], inc_stream_inc)
     inc_stream_inc_lst.append (inc_stream_inc)
-    print(f"total income streams: {inc_stream_inc_lst}")
-
-
-inc_stream_inc_dict = {}
-for i in range(len(inc_stream_lst)):
-    inc_stream_inc_dict[inc_stream_lst[i]] = inc_stream_inc_lst[i]
-    print(inc_stream_inc_dict)
+    st.write(f"total income from stream {i+1}: {inc_stream_inc_lst[i]}")
 
 
 
@@ -44,19 +72,20 @@ plt.tight_layout()
 st.pyplot(fig1)
 
 # --- Figure 2: Pie Chart ---
-fig2, ax2 = plt.subplots(figsize=(10, 6))
-ax2.pie(inc_stream_inc_lst, labels=inc_stream_lst, autopct='%1.1f%%',
+if sum(inc_stream_inc_lst) >0:
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
+    ax2.pie(inc_stream_inc_lst, labels=inc_stream_lst, autopct='%1.1f%%',
         colors=["lightpink", "skyblue", "grey"])
-ax2.set_title('Income Stream Percentage')
-plt.tight_layout()
-st.pyplot(fig2)
+    ax2.set_title('Income Stream Percentage')
+    plt.tight_layout()
+    st.pyplot(fig2)
 
 
 
 
 #______________________________EXPENSES_________________________________
 st.header("Expense Categories")
-no_categories=int(st.number_input("Enter the number of expense categories: "))
+no_categories=int(st.number_input("Enter the number of expense categories: ", step=1))
 
 exp_stream_lst=[]
 for i in range (no_categories):
@@ -84,10 +113,10 @@ plt.tight_layout()
 st.pyplot(fig3)  
 
 # --- Figure 2: Pie Chart ---
-fig4, ax4 = plt.subplots(figsize=(10, 6))
-ax4.pie(exp_stream_exp_lst, labels=exp_stream_lst, autopct='%1.1f%%',
+if sum(exp_stream_exp_lst)>0:
+    fig4, ax4 = plt.subplots(figsize=(10, 6))
+    ax4.pie(exp_stream_exp_lst, labels=exp_stream_lst, autopct='%1.1f%%',
         colors=["lightpink", "skyblue", "grey"])
-ax4.set_title('Expense Stream Percentage')
-
-plt.tight_layout()
-st.pyplot(fig4)  
+    ax4.set_title('Expense Stream Percentage')
+    plt.tight_layout()
+    st.pyplot(fig4)  
