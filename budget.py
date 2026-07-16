@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+st.set_page_config(layout='wide')
+st.container(border=True) 
 st.set_page_config(page_title="Personal Budget Visualizer", layout="wide")
 st.title("Personal Budget Visualizer")
 
-pink_colors = ['#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB']
+pink_colors = ['#FF1493', "#010101", '#FFB6C1', '#FFC0CB']
 
 #___________________Year & month selection_______________________________
 st.header("Year and Month Selection")
@@ -61,24 +63,27 @@ for i in range (no_inc_streams):
 
 
 # --- Figure 1: Bar Chart ---
-fig1, ax1 = plt.subplots(figsize=(10,6))
-bars = ax1.bar(inc_stream_lst, inc_stream_inc_lst, color="lightpink", edgecolor="navy")
-ax1.bar_label(bars, padding=3)
-ax1.set_title('Income Stream Breakdown', fontsize=26, fontweight='bold', pad=15)
-ax1.set_xlabel('Income Stream', fontsize=12)
-ax1.set_ylabel('Amount', fontsize=12)
-plt.xticks(rotation=45, ha='right')
-plt.tight_layout()
-st.pyplot(fig1)
-
-# --- Figure 2: Pie Chart ---
-if sum(inc_stream_inc_lst) >0:
-    fig2, ax2 = plt.subplots(figsize=(10, 6))
-    ax2.pie(inc_stream_inc_lst, labels=inc_stream_lst, autopct='%1.1f%%',
-        colors=["lightpink", "skyblue", "grey"])
-    ax2.set_title('Income Stream Percentage')
+chart1, chart2=st.columns(2)
+with chart1:
+    fig1, ax1 = plt.subplots(figsize=(10,6))
+    bars = ax1.bar(inc_stream_lst, inc_stream_inc_lst, color="lightpink", edgecolor="navy")
+    ax1.bar_label(bars, padding=3)
+    ax1.set_title('Income Stream Breakdown', fontsize=26, fontweight='bold', pad=15)
+    ax1.set_xlabel('Income Stream', fontsize=12)
+    ax1.set_ylabel('Amount', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    st.pyplot(fig2)
+    st.pyplot(fig1)
+
+with chart2:
+# --- Figure 2: Pie Chart ---
+    if sum(inc_stream_inc_lst) >0:
+        fig2, ax2 = plt.subplots(figsize=(10, 6))
+        ax2.pie(inc_stream_inc_lst, labels=inc_stream_lst, autopct='%1.1f%%',
+            colors=["lightpink", "skyblue", "grey"])
+        ax2.set_title('Income Stream Percentage')
+        plt.tight_layout()
+        st.pyplot(fig2)
 
 
 
@@ -95,28 +100,31 @@ for i in range (no_categories):
 
 exp_stream_exp_lst=[]
 for i in range (no_categories):
-    exp_stream_exp = st.number_input(f"insert income amounts per stream #{i}", min_value=0, key=f"exp_amt_{i}") 
+    exp_stream_exp = st.number_input(f"insert expense amounts per stream #{i}", min_value=0, key=f"exp_amt_{i}") 
     exp_stream_exp_lst.append (exp_stream_exp)
     print(f"total income streams: {exp_stream_exp_lst}")
 
 
 
 # --- Figure 1: Bar Chart ---
-fig3, ax3 = plt.subplots(figsize=(10,6))
-bars = ax3.bar(exp_stream_lst, exp_stream_exp_lst, color="lightpink", edgecolor="navy")
-ax3.set_title('Expense Stream Breakdown', fontsize=26, fontweight='bold', pad=15)
-ax3.bar_label(bars, padding=3)
-ax3.set_xlabel('Income Stream', fontsize=12)
-ax3.set_ylabel('Amount', fontsize=12)
-plt.xticks(rotation=45, ha='right')
-plt.tight_layout()
-st.pyplot(fig3)  
+chart3, chart4=st.columns(2)
+with chart3:
+    fig3, ax3 = plt.subplots(figsize=(10,6))
+    bars = ax3.bar(exp_stream_lst, exp_stream_exp_lst, color="lightpink", edgecolor="navy")
+    ax3.set_title('Expense Stream Breakdown', fontsize=26, fontweight='bold', pad=15)
+    ax3.bar_label(bars, padding=3)
+    ax3.set_xlabel('Income Stream', fontsize=12)
+    ax3.set_ylabel('Amount', fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    st.pyplot(fig3)  
 
 # --- Figure 2: Pie Chart ---
-if sum(exp_stream_exp_lst)>0:
-    fig4, ax4 = plt.subplots(figsize=(10, 6))
-    ax4.pie(exp_stream_exp_lst, labels=exp_stream_lst, autopct='%1.1f%%',
-        colors=["lightpink", "skyblue", "grey"])
-    ax4.set_title('Expense Stream Percentage')
-    plt.tight_layout()
-    st.pyplot(fig4)  
+with chart4:
+    if sum(exp_stream_exp_lst)>0:
+        fig4, ax4 = plt.subplots(figsize=(10, 6))
+        ax4.pie(exp_stream_exp_lst, labels=exp_stream_lst, autopct='%1.1f%%',
+            colors=["lightpink", "skyblue", "grey"])
+        ax4.set_title('Expense Stream Percentage')
+        plt.tight_layout()
+        st.pyplot(fig4)  
